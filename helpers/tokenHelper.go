@@ -100,7 +100,6 @@ func UpdateTokens(token, refreshToken, userID string) error {
 		bson.M{"_id": objID},
 		bson.M{
 			"$set": bson.M{
-				"token":         token,
 				"refresh_token": refreshToken,
 				"updated_at":    time.Now(),
 			},
