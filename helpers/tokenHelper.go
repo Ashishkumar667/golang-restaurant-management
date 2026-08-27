@@ -86,7 +86,7 @@ func ValidateToken(signedToken string) (*Claims, string, error) {
 	return claims, "", nil
 }
 
-func UpdateTokens(token, refreshToken, userID string) error {
+func UpdateTokens(refreshToken, userID string) error {
 	var ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 

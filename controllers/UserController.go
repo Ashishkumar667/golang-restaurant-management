@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/Ashishkumar667/golang-restaurant-management/database"
+	"github.com/Ashishkumar667/golang-restaurant-management/helpers"
 	"github.com/Ashishkumar667/golang-restaurant-management/models"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -22,11 +23,11 @@ func GetAllUsers() gin.HandlerFunc {
 		defer cancel()
 
 		result, err := UserCollection.Find(ctx, bson.M{})
-		defer result.Close(ctx)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "could not fetch Users data"})
 			return
 		}
+		defer result.Close(ctx)
 
 		var user []models.User
 
@@ -94,6 +95,7 @@ func SignUp() gin.HandlerFunc {
 		user.Created_At = time.Now()
 		user.Updated_At = time.Now()
 		user.ID = primitive.NewObjectID()
+		user.User_id = user.ID.Hex()
 
 		result, err := UserCollection.InsertOne(ctx, user)
 		if err != nil {
@@ -130,10 +132,28 @@ func Login() gin.HandlerFunc {
 			return
 		}
 
+		token, refreshToken, err := helpers.GenerateTokens(
+			*foundUser.Email,
+			*foundUser.First_Name,
+			*foundUser.Last_Name,
+			foundUser.ID.Hex(),
+		)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "could not generate token"})
+			return
+		}
+
+		if err := helpers.UpdateTokens(refreshToken, foundUser.ID.Hex()); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "could not update tokens"})
+			return
+		}
+
 		c.JSON(http.StatusOK, gin.H{
-			"message": "login successful",
-			"user_id": foundUser.ID,
-			"email":   foundUser.Email,
+			"message":       "login successful",
+			"token":         token,
+			"user_id":       foundUser.ID,
+			"email":         foundUser.Email,
+			"refresh_token": refreshToken,
 		})
 	}
 }
