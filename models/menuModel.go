@@ -11,7 +11,7 @@ type Menu struct {
 	Category        string					`json:"category"`
 	Start_Date      *time.Time				`json:"start_date"`
 	End_Date 		*time.Time				`json:"end_date"`
-	Created_At		*time.Time				`json:"created_at"`
-	Updated_At		*time.Time				`json:"updated_at"`
+	Created_At		time.Time				`json:"created_at"`
+	Updated_At		time.Time				`json:"updated_at"`
 	Menu_Id			string					`json:"menu_id"`
 }
