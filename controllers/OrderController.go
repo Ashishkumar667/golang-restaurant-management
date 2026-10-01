@@ -84,7 +84,6 @@ func UpdateOrder() gin.HandlerFunc {
 			}
 			updateObj = append(updateObj, bson.E{"table_id", order.Table_id})
 		}
-		order.Created_At, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 		order.Updated_At, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 		updateObj = append(updateObj, bson.E{"created_at", order.Created_At})
 
