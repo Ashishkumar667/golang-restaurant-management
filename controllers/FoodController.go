@@ -133,7 +133,7 @@ func UpdateFood() gin.HandlerFunc {
 
 		var food models.Food
 
-		if err := c.ShouldBindJSON(&food); err != nil { //read json payload from client
+		if err := c.ShouldBindJSON(&food); err != nil { //read json payload from client(fe)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": "invalid request body",
 			})
